@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace IEXBase\TronAPI;
 
-use Comely\DataTypes\BcNumber;
 use IEXBase\TronAPI\Exception\TRC20Exception;
 use IEXBase\TronAPI\Exception\TronException;
 
@@ -379,7 +378,10 @@ class TRC20Contract
      */
     protected function decimalValue(string $int, int $scale = 18): string
     {
-        return (new BcNumber($int))->divide(pow(10, $scale), $scale)->value();
+        // Calculate divisor as 10^scale
+        $divisor = bcpow('10', (string)$scale, $scale);
+        // Divide the integer by the divisor with the given scale
+        return bcdiv($int, $divisor, $scale);
     }
 
     /**
